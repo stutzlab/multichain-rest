@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+    multichain-rest:
+        build: .
+        ports:
+            - "6000:6000"
