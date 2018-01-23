@@ -19,6 +19,37 @@ function fromHex(hexx) {
     return str;
 }
 
+function AsyncArray(dt) {
+    this.data = dt;
+    this.filterAsync = function(predicate) {
+        // Take a copy of the array, it might mutate by the time we've finished
+        const dat = Array.from(this.data);
+        // Transform all the elements into an array of promises using the predicate
+        // as the promise
+        return Promise.all(dat.map((element, index) => predicate(element, index, dat)))
+            // Use the result of the promises to call the underlying sync filter function
+            .then(result => {
+                return dat.filter((element, index) => {
+                    return result[index];
+                });
+            });
+    }
+    this.mapAsync = function (predicate) {
+        // Take a copy of the array, it might mutate by the time we've finished
+        const dat = Array.from(this.data);
+        // Transform all the elements into an array of promises using the predicate
+        // as the promise
+        return Promise.all(dat.map((element, index) => predicate(element, index, dat)))
+            // Use the result of the promises to call the underlying sync filter function
+            .then(result => {
+                return dat.map((element, index) => {
+                    return result[index];
+                });
+            });
+    }
+}
+
+
 function MultichainRouter(multichainHost, multichainPort, multichainUser, multichainPass) {
 
     let multichainNode = MultichainNode({
@@ -184,14 +215,32 @@ function MultichainRouter(multichainHost, multichainPort, multichainUser, multic
 
         router.get('/addresses/:address/locks', async (req, res) => {
             try {
-                let params = req.body;
-                params.from = req.params.address;
-                params[params.asset] = params.qty;
-                let txout = await this.multichainNodeAsync.prepareLockUnspentFrom(params);
-                res.status(200).send({txout});
+                let listLocks = new AsyncArray(await this.multichainNodeAsync.listLockUnspentAsync());
+
+                let txouts = new AsyncArray(await listLocks.mapAsync(async lock => {
+                    let txout = await this.multichainNodeAsync.getTxOutAsync({
+                        txid: lock.txid + '',
+                        vout: parseInt(lock.vout)
+                    });
+                    return {
+                        txid: lock.txid,
+                        vout: lock.vout,
+                        addresses: txout?txout.scriptPubKey.addresses:null,
+                        assets: txout?txout.assets:null
+                    }
+                }));
+                let txouts2 = await txouts.filterAsync(async txout => {
+                    if (txout && txout.addresses && txout.addresses.includes(req.params.address)) {
+                        return true;
+                    }
+                    return false;
+                });
+                    
+                res.status(200).send({locks:txouts2});
+
             } catch (err) {
                 logger.warn(err);
-                res.status(500).send({ error: err });
+                res.status(500).send({error: err});
             }
         });
 
@@ -202,12 +251,21 @@ function MultichainRouter(multichainHost, multichainPort, multichainUser, multic
                 });
                 logger.debug(details);
 
-                if (!details.scriptPubKey.addresses.includes(req.params.address)) {
+                if(details==null) {
+                    logger.warn('txout ' + req.params.txid + ':' + req.params.vout + ' could not be found');
+                    res.status(404).send({
+                        error: 'txout ' + req.params.txid + ':' + req.params.vout + ' could not be found'
+                    });
+                    return;
+
+                } else if (!details.scriptPubKey.addresses.includes(req.params.address)) {
                     logger.warn('txout ' + req.params.txid + ':' + req.params.vout + ' doesn\'t belong to address ' + req.params.address);
-                    res.status(400).send({ error: 'txout ' + req.params.txid + ':' + req.params.vout + ' doesn\'t belong to address ' + req.params.address });
+                    res.status(400).send({
+                        error: 'txout ' + req.params.txid + ':' + req.params.vout + ' doesn\'t belong to address ' + req.params.address
+                    });
                     return;
                 }
-                parei aqui
+
                 let result = await this.multichainNodeAsync.lockUnspentAsync({
                     unlock: true,
                     outputs: [{ txid:req.params.txid+'', vout:parseInt(req.params.vout) }]
@@ -219,12 +277,70 @@ function MultichainRouter(multichainHost, multichainPort, multichainUser, multic
             }
         });
 
-        router.post('/addresses/:address/exchange', async (req, res) => {
+        router.post('/exchange', async (req, res) => {
+            let context = '';
             try {
-                res.status(200).send(t);
+
+                //lock resources from side 1
+                context = 'lock address_1 ' + req.body.address_1;
+                let params1 = {
+                    from: req.body.address_1,
+                    assets: {}
+                };
+                params1.assets[req.body.asset_1] = req.body.qty_1;
+                let txout1 = await this.multichainNodeAsync.prepareLockUnspentFromAsync(params1);
+                logger.debug('txout1', txout1);
+
+                //lock resources from side 2
+                context = 'lock address_2 ' + req.body.address_2;
+                let params2 = {
+                    from: req.body.address_2,
+                    assets: {}
+                };
+                params2.assets[req.body.asset_2] = req.body.qty_2;
+                let txout2 = await this.multichainNodeAsync.prepareLockUnspentFromAsync(params2);
+                logger.debug('txout2', txout2);
+
+                //create exchange with side 1
+                context = 'exchange side1';
+                let createRawExchangeParam = {};
+                createRawExchangeParam.assets = {};
+                createRawExchangeParam.assets[req.body.asset_2] = req.body.qty_2;
+                createRawExchangeParam.txid = txout1.txid;
+                createRawExchangeParam.vout = txout1.vout;
+                let hexstringCreate = await this.multichainNodeAsync.createRawExchangeAsync(createRawExchangeParam);
+                logger.debug('createRawExchangeParam', createRawExchangeParam);
+                logger.debug('hexstringCreate', hexstringCreate);
+
+                //append exchange with side 2
+                context = 'exchange side2';
+                let appendRawExchangeParam = {};
+                appendRawExchangeParam.hexstring = hexstringCreate;
+                appendRawExchangeParam.assets = {};
+                appendRawExchangeParam.assets[req.body.asset_1] = req.body.qty_1;
+                appendRawExchangeParam.txid = txout2.txid;
+                appendRawExchangeParam.vout = txout2.vout;
+                let hexstringAppend = await this.multichainNodeAsync.appendRawExchangeAsync(appendRawExchangeParam);
+                logger.debug('appendRawExchangeParam', appendRawExchangeParam);
+                logger.debug('hexstringAppend', hexstringAppend);
+
+                //send exchange transaction for good!
+                context = 'submit exchange';
+                let result = await this.multichainNodeAsync.sendRawTransactionAsync({ hexstring: hexstringAppend.hex});
+                logger.debug('result', result);
+
+                res.status(200).send({
+                    exchange: result,
+                    txout1: txout1,
+                    txout2: txout2
+                });
+
             } catch (err) {
-                logger.warn(err);
-                res.status(500).send({ error: err });
+                logger.warn(err, context);
+                res.status(500).send({
+                    error: err,
+                    context: context
+                });
             }
         });
 

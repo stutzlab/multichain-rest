@@ -1,0 +1,801 @@
+{
+	"info": {
+		"name": "multichain-rest",
+		"_postman_id": "b067ac47-00ca-1ef3-855f-d6616c9eca28",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "post /addresses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d4edf5fd-1b5b-45b7-83fd-190ab2212068",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"try {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"address\", jsonData.address);",
+							"} catch (err) {",
+							"    console.log(err);",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"permissions\":\"send,receive\"\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post /addresses2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de27b147-afed-4dd3-ad37-bc5443213282",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"try {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"address2\", jsonData.address);",
+							"} catch (err) {",
+							"    console.log(err);",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"permissions\":\"send,receive\"\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/issue ABC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e1a2f1df-4b4c-47e9-a04e-1b19f26514d6",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"asset\": \"ABC\",\n\t\"qty\": 40,\n\t\"units\": 0.000001,\n\t\"details\": {\"info\": \"i'm am an info about the issue!\"}\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/issue",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"issue"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/issue DEF",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e1a2f1df-4b4c-47e9-a04e-1b19f26514d6",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"asset\": \"DEF\",\n\t\"qty\": 111.1,\n\t\"units\": 0.000001\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/issue",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"issue"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/send_asset",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "255ce50d-83e3-420e-8db5-740564ea1a6c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{address}}\",\n    \"to\": \"{{address2}}\",\n\t\"asset\": \"ABC\",\n\t\"qty\": 10\n}\n\n"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/send_asset",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"send_asset"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/send_asset (data)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "255ce50d-83e3-420e-8db5-740564ea1a6c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{address}}\",\n    \"to\": \"{{address2}}\",\n\t\"asset\": \"DEF\",\n\t\"qty\": 0.01,\n\t\"data\": \"this is a test\"\n}\n\n"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/send_asset",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"send_asset"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "95f45e3b-77ed-472c-8c22-e37260db24b6",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/balance?includeLocked=false&minconf=1",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"balance"
+					],
+					"query": [
+						{
+							"key": "includeLocked",
+							"value": "false",
+							"equals": true
+						},
+						{
+							"key": "minconf",
+							"value": "1",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/balance2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "95f45e3b-77ed-472c-8c22-e37260db24b6",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address2}}/balance",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address2}}",
+						"balance"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/transactions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f227227-c032-42d2-bb16-c3b6a5c551b3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"transactions"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/transactions paging",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f227227-c032-42d2-bb16-c3b6a5c551b3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/transactions?skip=3&count=2",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "skip",
+							"value": "3",
+							"equals": true
+						},
+						{
+							"key": "count",
+							"value": "2",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/transactions pretty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f227227-c032-42d2-bb16-c3b6a5c551b3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/transactions?pretty=true",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": "true",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/transactions2 pretty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f227227-c032-42d2-bb16-c3b6a5c551b3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address2}}/transactions?pretty=true",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address2}}",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": "true",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post /addresses/grant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f19aa6b4-c653-4a24-a9ab-c3ea1addd750",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"permissions\":\"send,receive\"\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/grant",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"grant"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post /addresses/locks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "047a9456-380f-49ff-9ae3-e280dc703f5c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"try {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"txid\", jsonData.txout.txid);",
+							"    postman.setEnvironmentVariable(\"vout\", jsonData.txout.vout);",
+							"} catch (err) {",
+							"    console.log(err);",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"asset\":\"ABC\",\n\t\"qty\": 0.111\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/locks",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"locks"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get /addresses/locks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "047a9456-380f-49ff-9ae3-e280dc703f5c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"try {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"txid\", jsonData.txout.txid);",
+							"    postman.setEnvironmentVariable(\"vout\", jsonData.txout.vout);",
+							"} catch (err) {",
+							"    console.log(err);",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"asset\":\"ABC\",\n\t\"qty\": 0.111\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/locks",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"locks"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete /addresses/locks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e00975e3-6eaf-4a0c-b3f3-3dce9b44f676",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:6000/addresses/{{address}}/locks/{{txid}}/{{vout}}",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"addresses",
+						"{{address}}",
+						"locks",
+						"{{txid}}",
+						"{{vout}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post /exchange",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "047a9456-380f-49ff-9ae3-e280dc703f5c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"try {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"txid\", jsonData.txout.txid);",
+							"    postman.setEnvironmentVariable(\"vout\", jsonData.txout.vout);",
+							"} catch (err) {",
+							"    console.log(err);",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address_1\": \"{{address}}\",\n\t\"asset_1\": \"DEF\",\n\t\"qty_1\": 11.1,\n\t\"address_2\": \"{{address2}}\",\n\t\"asset_2\": \"ABC\",\n\t\"qty_2\": 0.111\n}"
+				},
+				"url": {
+					"raw": "localhost:6000/exchange",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"exchange"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
