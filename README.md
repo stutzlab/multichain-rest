@@ -30,16 +30,19 @@ For POST operations, you can use the same body attributes as in:
 
 * Create a new address with 'send' and 'receive' grants and store the private key in the connected multichain node wallet
 
-```curl --request POST \
+```
+curl --request POST \
   --url http://localhost:6000/addresses \
   --header 'Content-Type: application/json' \
   --data '{
 	"permissions":"send,receive"
-}'```
+}'
+```
 
 * Issue 40 units of asset ABC into address 14ETi... with some textual details embeded to the transaction
 
-```curl --request POST \
+```
+curl --request POST \
   --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/issue' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -47,11 +50,13 @@ For POST operations, you can use the same body attributes as in:
 	"qty": 40,
 	"units": 0.000001,
 	"details": {"info": "i'\''m am an info about the issue!"}
-}'```
+}'
+```
 
 * Send 10 ABCs from account 14ETi... to 1BJBK3... annotated with textual info "this is a test"
 
-```curl --request POST \
+```
+curl --request POST \
   --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/send_asset' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -60,43 +65,53 @@ For POST operations, you can use the same body attributes as in:
 	"asset": "ABC",
 	"qty": 10,
 	"data": "this is a test"
-}
-'```
+}'
+```
 
 * Get balances (one value for each asset at the address), but don't consider values that were locked
 
-```curl --request GET \
-  --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/balance?includeLocked=false&minconf=1'```
+```
+curl --request GET \
+  --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/balance?includeLocked=false&minconf=1'
+```
 
 * Get the transactions list for an address as Multichain returns it. Skip 3 transactions and limit to 2 results (paging)
 
 ```curl --request GET \
-  --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/transactions?skip=3&count=2'```
+  --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/transactions?skip=3&count=2'
+```
   
 * Get the transactions list for an address in a simplified format (less data)
 
-```curl --request GET \
-  --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/transactions?pretty=true'```
+```
+curl --request GET \
+  --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/transactions?pretty=true'
+```
   
 * Lock 0.111 ABC from address 14ET... so that other general wallet operations will not use it
 
-```curl --request POST \
+```
+curl --request POST \
   --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/locks' \
   --header 'Content-Type: application/json' \
   --data '{
 	"asset":"ABC",
 	"qty": 0.111
-}'```
+}'
+```
 
 * Cancel the above lock
 
-```curl --request DELETE \
+```
+curl --request DELETE \
   --url 'http://localhost:6000/addresses/14ETiNnvSYF2764xXjiZVvcLZJVCRwaGDCgJ4T/locks/c23ff9992d0c6310d56017bac5bce4c9f7d330be566993cb7fb255aaccde15ef/0' \
-  --header 'Content-Type: application/json'```
+  --header 'Content-Type: application/json'
+```
 
 * Exchange 11.1 DEF from account 14ET... by 0.111 ABC from account 1BJB...
 
-```curl --request POST \
+```
+curl --request POST \
   --url http://localhost:6000/exchange \
   --header 'Content-Type: application/json' \
   --data '{
@@ -106,5 +121,6 @@ For POST operations, you can use the same body attributes as in:
 	"address_2": "{{address2}}",
 	"asset_2": "ABC",
 	"qty_2": 0.111
-}'```
+}'
+```
 
