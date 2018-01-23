@@ -1,22 +1,18 @@
-FROM openjdk:8-jdk-alpine
+#FROM node:8.6.0
+FROM node:9.4-alpine
+ENV work_dir /app
 
-# create a Maven repo to store the downloaded jars
-RUN mkdir -p /app
-RUN mkdir -p /app/maven_repo
+WORKDIR ${work_dir}
 
-# just downlading the dependencies
-RUN mkdir -p /tmp
-WORKDIR /tmp
-COPY pom.xml /tmp/pom.xml
-RUN mvn -Dmaven.repo.local=/app/maven_repo dependency:go-offline
-RUN mvn -Dmaven.repo.local=/app/maven_repo install; exit 0
+ADD src/package.json ${work_dir}
+RUN npm install
 
-# compiling and packaging the Java App
-WORKDIR /app
-COPY . /app
-RUN mvn -Dmaven.repo.local=/app/maven_repo install
+ADD src/ ${work_dir}
 
-EXPOSE 8080
+ENV MULTICHAIN_HOST localhost
+ENV MULTICHAIN_PORT 8000
+ENV MULTICHAIN_USER multichainrpc
+ENV MULTICHAIN_PASS 0000
 
-# fire in the hole
-CMD ["/app/bin/java","-jar","/app/target/app.jar"]
+EXPOSE 8000
+CMD ["npm", "start"]

@@ -1,0 +1,26 @@
+{
+  "name": "multichain-rest",
+  "version": "1.0.0",
+  "description": "Multichain REST Api over Multichain RPC",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stutzlab/multichain-rest.git"
+  },
+  "author": "Flavio Stutz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stutzlab/multichain-rest/issues"
+  },
+  "homepage": "https://github.com/stutzlab/multichain-rest#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "console-server": "^1.0.9",
+    "express": "^4.16.2",
+    "multichain-node": "^2.1.6-version1.0.2"
+  }
+}

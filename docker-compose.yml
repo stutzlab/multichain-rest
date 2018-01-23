@@ -1,7 +1,26 @@
 version: '2'
 
 services:
+
     multichain-rest:
         build: .
         ports:
             - "6000:6000"
+        environment:
+            - MULTICHAIN_HOST=${HOST_IP}
+            - MULTICHAIN_PORT=8000
+            - MULTICHAIN_USER=multichainrpc
+            - MULTICHAIN_PASS=multichain123
+
+    multichain-server:
+        image: stutzlab/multichain
+        ports:
+            - "7000:7000"
+            - "8000:8000"
+            - "9000:9000"
+        environment:
+            CHAINNAME: MyChain
+            RPC_USER: multichainrpc
+            RPC_PASSWORD: multichain123
+            PARAM_ANYONE_CAN_CONNECT: anyone-can-connect|false
+            PARAM_ANYONE_CAN_MINE: anyone-can-mine|false
