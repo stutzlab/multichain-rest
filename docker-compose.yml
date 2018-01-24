@@ -13,7 +13,7 @@ services:
             - MULTICHAIN_PASS=multichain123
 
     multichain-server:
-        image: stutzlab/multichain
+        image: stutzlab/multichain-genesis
         ports:
             - "7000:7000"
             - "8000:8000"
